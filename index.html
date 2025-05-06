@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>Ideen für SN-Beiträge</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 30px; }
+    input, textarea, select { width: 100%; padding: 8px; margin-top: 5px; }
+    button { margin-top: 10px; padding: 10px; background: #005a87; color: white; border: none; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <h2>Beitragswünsche einreichen</h2>
+
+  <form id="form">
+    <label>Name:</label>
+    <input type="text" id="name" required>
+
+    <label>Beschreibung (max. 1500 Wörter):</label>
+    <textarea id="beschreibung" rows="5" required maxlength="10000"></textarea>
+
+    <label>Kanal:</label>
+    <select id="kanal">
+      <option>Instagram-Beitrag</option>
+      <option>LinkedIn-Beitrag</option>
+      <option>Beides</option>
+    </select>
+
+    <label>Gewünschter Termin fürs Posten:</label>
+    <input type="date" id="termin" required>
+
+    <label>Anlagen (Bilder/Dokumente):</label>
+    <input type="file" id="anlagen" multiple>
+
+    <button type="submit">Absenden</button>
+  </form>
+
+  <h3>Bisherige Einträge:</h3>
+  <div id="entries"></div>
+
+<script>
+document.getElementById('form').addEventListener('submit', async e => {
+  e.preventDefault();
+
+  let formData = new FormData();
+  formData.append('name', document.getElementById('name').value);
+  formData.append('beschreibung', document.getElementById('beschreibung').value);
+  formData.append('kanal', document.getElementById('kanal').value);
+  formData.append('termin', document.getElementById('termin').value);
+
+  const files = document.getElementById('anlagen').files;
+  for(let i = 0; i < files.length; i++) {
+    formData.append('file'+i, files[i]);
+  }
+
+  await fetch('DEINE_WEB_APP_URL', {
+    method: 'POST',
+    body: formData
+  });
+
+  alert('Vielen Dank für den Beitrag!');
+  location.reload();
+});
+
+async function loadEntries(){
+  const response = await fetch('Dhttps://script.google.com/u/0/home/projects/1isFXDcEZs131lYL-0njHI3oDi5xrtfpaP0eZAGHG3I5WuhAJWATM_Nm8');
+  const data = await response.json();
+
+  let html = '<ul>';
+  data.slice(1).forEach(row => {
+    html += `<li><strong>${row[1]}</strong> (${row[0]}): ${row[2]} – Kanal: ${row[3]}, Gewünschter Termin: ${row[4]}, Status: ${row[5]}, Veröffentlicht am: ${row[6]}, Anlagen: ${row[7]}</li>`;
+  });
+  html += '</ul>';
+
+  document.getElementById('entries').innerHTML = html;
+}
+
+window.onload = loadEntries;
+</script>
+</body>
+</html>
